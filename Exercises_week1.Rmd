@@ -1,0 +1,181 @@
+---
+title: "The Exercises of Week 1"
+output:
+ html_document:
+  theme: default
+  highlight: pygments
+  center: true
+  toc: true
+  toc_float: false
+---
+
+**Online Exercises on DataCamp**: 
+Register at the [DataCamp](https://www.datacamp.com) for the free online course “Business Analytics-2021”. Three online assignments are waiting for you. Those online assignments are preparing you for the computer labs. *The online assignments at the DataCamp are not mandatory*.
+
+**Your task** is to answer the questions in this R-markdown file. Submit both your R-markdown (.Rmd) file and the HTML file on Canvas. Note that your R-markdown has to be in the right format. 
+
+## 1 How to use R-Markdown in RStudio?
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+For a quick demo on how to use R Markdown in RStudio see: [https://www.youtube.com/embed/DNS7i2m4sB0](https://www.youtube.com/embed/DNS7i2m4sB0)
+
+In your RStudio, open the .Rmd file (Exercises_week1.Rmd) 
+When you click the **Knit** button a document will be generated that includes both contents as well as the output of any embedded R code chunks within the document. 
+
+## 2 Business Understaning Stage
+
+For data-driven business-making, it is vital to understand the problem to be solved. This may seem obvious, but business projects seldom come pre-packaged as clear and unambiguous data mining problems. 
+
+The Business Understanding stage represents a key part of the craft where the analysts' creativity plays a large role. Data Science has some things to say, as we will describe, but often the key to a great success is a creative problem formulation by some analyst regarding how to cast the business problem as one or more data science problems.  High-level knowledge of the fundamentals helps creative business analysts see novel formulations. The Business Understanding stage can be done by following steps:
+
+1. First, clearly enunciate the project objectives and requirements in terms of the business or research unit as a whole.
+2. Then, translate these goals and restrictions into the formulation of a problem that can be solved using data science.
+3. Finally, prepare a preliminary strategy for achieving these objectives.
+
+**Your task** for this part is to write a Business problem that you have (or you had) in your company. Write the problem done by following the above three steps for the Business Understanding stage and discuss it with your teammate. Each group should represent the result in the class for around 5 minutes. 
+
+Do you think the Business/Research problem that you defined above is interesting and can be solved using data science? If so, provide your reasons. Just remember that you could consider it as the main project of this course and it could be replaced by assignments 1 and 2. It means it can cover 28 percent of your final grade. 
+
+If you have an interesting Business/Research problem, I highly recommend you define it as the main project of your course with your teammates. I think in this way this course for you would be more effective and I will support you.
+  
+## 3 Data Understanding Phase for Corona dataset
+
+In this part, we want to describe data understanding and visualization for the Corona Coronavirus dataset. The dataset is available in the **R** package [**liver**](https://CRAN.R-project.org/package=liver). For more information about this dataset see ["EU Open Data Portal" ](https://data.europa.eu/euodp/en/data/dataset/covid-19-coronavirus-data) website. The dataset contains the public worldwide data on Corona from 1 January 2020 up to 14 December 2020. 
+
+### 3.1 Loading/Attaching **R** packages
+
+Sometimes we need some function/dataset which is not in **R**. In this case, we need to install and load the package that includes that function/dataset. Note, we need to install the package once; the next time that we open **R**, we only need to load the package. For example, here, we need to load the following R packages:
+
+* [**liver**](https://CRAN.R-project.org/package=liver): the *corona* dataset is in this package. 
+* [**ggplot2**](https://CRAN.R-project.org/package=ggplot2): we use the functionality of this package for data visualization.
+* [**dplyr**](https://CRAN.R-project.org/package=dplyr): we use the `filter()` function from this package.
+
+To load these two package:
+```{r, message=FALSE, warning=FALSE}
+library( liver )      
+library( ggplot2 )      
+library( dplyr )    
+```
+
+**NOTE:** If you have not installed these packages, you should first install them.
+
+So, if it is needed, install the packages. In RStudio, after clicking on the "Tools" tab, click on "Install Packages...". In the Install Packages dialog, write the package name you want to install under the Packages field and then click install. **NOTE** Please select the option "Install dependencies".
+
+**Your task here is to install these packages on our computer.**
+
+### 3.2 Importing and understading `corona` dataset
+
+In general, we could import the Dataset sheet from our personal computer or an online source into **R**, by using the `read.csv()` function. But, here, since the *corona* dataset is available in the **R** package "*liver*", we import the *corona* dataset in **R** as follows:
+```{r}
+data( corona ) # loads "corona" data in your RStudio environment
+``` 
+
+To see the overview of the dataset in **R**, we could use the following functions: 
+
+* `str`  to see a compact display of the structure of the data. 
+* `View` to see spreadsheet-style data. 
+* `head` to see the first part of the data (first 6-rows of data).
+* `summary` to see the summary of each variable.
+
+Here we use the `str()` function to report the structure of the *corona* dataset as follows
+```{r}
+str( corona )   
+```
+
+It shows the dataset is an object as a *data.frame* in **R** with `r nrow(corona)` observations and `r ncol(corona)` variables. The important variables here are `dateRep`, `cases`, `deaths`, `geoId`, and so on. For example, the variable `geoId` is for the id of the different countries:
+
+* "NL" for Netherland,
+* "IT" for Italy,
+* "US" for the US,
+
+and so on.
+
+**a. For each variable, specify its type.**
+
+**b. By using the `summary` function report the summary of the *corona* dataset.**
+
+**c. Interpret the output of the `summary` function in the previous part. Are there any missing values in the dataset?** Note that missing values in **R** are saved as *NA*. 
+
+### 3.3 Daily cases/deaths in Netherland (NL)
+
+First, we select the part of the data which is for Netherlands, by using the `filter()` funciton from the **R** package *dplyr* as follows:
+```{r echo = T, message=FALSE}
+corona_nl = filter( corona, geoId == "NL" )
+```
+In the above code, by using the option `geoId == "NL"` in the `filter()` function, we choose just the part of the dataset from the Netherlands and put it in the object with the name `corona_nl`.
+
+Here is a plot for the confirmed cases and deaths of Corona in Netherland:
+```{r, echo = T, warning = F, fig.align = 'center' }
+ggplot( data = corona_nl, aes( x = dateRep ) ) +
+  geom_area( aes( y = cases  ), color = "blue", fill = "lightblue", alpha = 0.2 ) +
+  geom_area( aes( y = deaths ), color = "red", fill = "red", alpha = 0.3 ) +
+  labs( title = "Corona daily Cases & Deaths in Netherlands", 
+        y = "Number of Cases & Deaths", x = "" ) 
+```
+
+In the above plot, daily cases is in <span style="color:blue">*blue*</span> and daily deaths is in <span style="color:red">*red*</span> color.
+
+If you think the above code is too advanced, do not worry. It's easier than you think. We are going to learn about it in the next week's practical lab. 
+
+**Try to understand how it works and interpret the output.** (One sentence is sufficient.)
+
+### 3.4 Daily cases/deaths in UK and US
+
+Similar to the previous a plot for the confirmed cases and deaths of Corona in UK:
+
+```{r, echo = T, fig.align = 'center' }
+corona_uk = filter( corona, geoId == "UK" )
+
+ggplot( data = corona_uk, aes( x = dateRep ) ) +
+  geom_area( aes( y = cases  ), color = "blue", fill="lightblue", alpha = 0.2 ) +
+  geom_area( aes( y = deaths ), color = "red", fill = "red", alpha = 0.3 ) +
+  labs( title = "Corona Daily Cases & Deaths in UK", 
+        y = "Number of Cases & Deaths", x = "" ) 
+```
+
+**Similar to the above code, create a plot for the US or your own country.**
+
+### 3.5 Daily cases for Netherlands and UK
+
+To compare the daily **cases** between Netherlands and UK:
+
+```{r, echo = F, fig.align = 'center' }
+corona_p = filter( corona, geoId == "NL" | geoId == "UK" )
+
+ggplot( corona_p, aes( x = dateRep, y = cases, color = geoId ) ) +
+   geom_line() +
+   labs( title = "Corona Daily Cases for NL and UK", 
+         y = "Number of Cases", x = "" ) 
+```
+
+Cumulative number for 14 Days of Corona Cases per 100K for Netherlands and UK:
+
+```{r, echo = F, warning = F, fig.align = 'center' }
+corona_p = filter( corona, geoId == "NL" | geoId == "UK" )
+
+ggplot( corona_p, aes( x = dateRep, y = Cumulative_number_for_14_days_of_COVID.19_cases_per_100000, color = geoId ) ) +
+   geom_line() +
+   labs( title = "Cumulative number for 14 Days of Corona Cases per 100K", 
+         y = "Number of Cases", x = "" ) 
+```
+
+**Similar to the above code, create a plot to compare the daily deaths between US and Netherlands.**
+
+### 3.6 Daily cases for more countries
+
+Plot for the cumulative number for 14 Days of Corona Cases per 100K for Netherlands (Nl), UK, Germany (DE), Belgium (BE), and Italy (IT):
+
+```{r, echo = F, warning = F, fig.align = 'center' }
+corona_p = filter( corona, geoId == "NL" | geoId == "UK" | geoId == "DE" | geoId == "BE" | geoId == "IT" )
+
+ggplot( corona_p, aes( x = dateRep, y = Cumulative_number_for_14_days_of_COVID.19_cases_per_100000, color = geoId ) ) +
+   geom_line() +
+   labs( title = "Cumulative number for 14 Days of Corona Cases per 100K", 
+         y = "Number of Cases", x = "" ) 
+```
+
+**Similar to the above code, create a plot for the cumulative number for 14 Days of Corona Cases per 100K for the above countries plus US.**
+
+$~$
+
